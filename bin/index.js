@@ -2,17 +2,17 @@
 import { Command } from 'commander'
 import { resolve } from 'node:path'
 import { run } from '../index.js'
-
+import crossImport from 'cross-import'
 
 async function parse(args) {
   let program = await parseArgs(args)
-  const command = program.args[0];
-  const commandArgs = args.splice(args.indexOf(command) + 1);
-  program = await parseArgs(args.slice(0, args.indexOf(command)));
+  const command = program.args[0]
+  const commandArgs = args.splice(args.indexOf(command) + 1)
+  program = await parseArgs(args.slice(0, args.indexOf(command)))
   const options = program.opts()
   return {
-    cmd: [command,...commandArgs].join(' '),
-    env: await getEnv(options.environments)
+    cmd: [command, ...commandArgs].join(' '),
+    env: await getEnv(options.environments),
   }
 }
 
@@ -21,13 +21,13 @@ async function parse(args) {
  * @param args
  * @returns {Promise<Command>}
  */
-async function parseArgs(args){
+async function parseArgs(args) {
   const program = new Command()
   return program
     .usage('[options] <command> [...args]')
     .allowUnknownOption()
     .option('-e, --environments [env1,env2,...]', 'The rc file environment(s) to use')
-    .parse(['_', '_', ...args]);
+    .parse(['_', '_', ...args])
 }
 
 const { cmd, env } = await parse(process.argv.slice(2))
@@ -39,7 +39,8 @@ async function getEnv(e) {
   let env = null
   for (const path of envRcFileList) {
     try {
-      env = await import('file://' + resolve(process.cwd(), path)).then(res => isFunction(res.default) ? res.default() : res.default)
+      const res = crossImport(resolve(process.cwd(), path))
+      env = isFunction(res.default) ? res.default() : res.default
       break
     } catch (err) {
 

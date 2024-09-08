@@ -1,6 +1,6 @@
 {
   "name": "env-cmd-es",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A simple node program for executing commands using an environment from an env file.",
   "keywords": [
     "env-cmd",
@@ -23,6 +23,7 @@
   "author": "DoveAz",
   "license": "ISC",
   "dependencies": {
-    "commander": "^12.1.0"
+    "commander": "^12.1.0",
+    "cross-import": "^3.0.23"
   }
 }
